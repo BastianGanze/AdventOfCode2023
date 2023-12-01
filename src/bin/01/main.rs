@@ -97,8 +97,7 @@ fn part_2(parse_output: &mut ParseOutput) -> Solution {
         }).unwrap();
         tokens.iter_mut().for_each(|t| t.reset_rev());
         let last = l.chars().rev().find_map(|c| {
-            let n = c.to_digit(10).or(tokens.iter_mut().find_map(|t| t.check_token_for_value_rev(c)));
-            n
+            c.to_digit(10).or(tokens.iter_mut().find_map(|t| t.check_token_for_value_rev(c)))
         }).unwrap();
         solution = solution + (first * 10) + last;
     }
