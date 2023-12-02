@@ -7,15 +7,20 @@ const TEST_INPUT: &str = include_str!("test_input");
 const TEST_INPUT_2: &str = include_str!("test_input_2");
 
 pub fn parse(file: &str) -> ParseOutput {
-    (file.lines().map(|l| l.to_string()).collect(), [WordNumberSearchToken::new("one", 1),
-        WordNumberSearchToken::new("two", 2),
-        WordNumberSearchToken::new("three", 3),
-        WordNumberSearchToken::new("four", 4),
-        WordNumberSearchToken::new("five", 5),
-        WordNumberSearchToken::new("six", 6),
-        WordNumberSearchToken::new("seven", 7),
-        WordNumberSearchToken::new("eight", 8),
-        WordNumberSearchToken::new("nine", 9)])
+    (
+        file.lines().map(|l| l.to_string()).collect(),
+        [
+            WordNumberSearchToken::new("one", 1),
+            WordNumberSearchToken::new("two", 2),
+            WordNumberSearchToken::new("three", 3),
+            WordNumberSearchToken::new("four", 4),
+            WordNumberSearchToken::new("five", 5),
+            WordNumberSearchToken::new("six", 6),
+            WordNumberSearchToken::new("seven", 7),
+            WordNumberSearchToken::new("eight", 8),
+            WordNumberSearchToken::new("nine", 9),
+        ],
+    )
 }
 
 pub struct WordNumberSearchToken<'a> {
@@ -29,7 +34,7 @@ impl<'a> WordNumberSearchToken<'a> {
         WordNumberSearchToken {
             current_cursor: 0,
             chars: string.as_bytes(),
-            value
+            value,
         }
     }
 
@@ -73,8 +78,6 @@ impl<'a> WordNumberSearchToken<'a> {
     }
 }
 
-
-
 fn part_1(parse_output: &ParseOutput) -> Solution {
     let mut solution = 0;
     let (lines, _) = parse_output;
@@ -92,13 +95,23 @@ fn part_2(parse_output: &mut ParseOutput) -> Solution {
 
     for l in lines {
         tokens.iter_mut().for_each(|t| t.reset());
-        let first = l.chars().find_map(|c| {
-            c.to_digit(10).or(tokens.iter_mut().find_map(|t| t.check_token_for_value(c)))
-        }).unwrap();
+        let first = l
+            .chars()
+            .find_map(|c| {
+                c.to_digit(10)
+                    .or(tokens.iter_mut().find_map(|t| t.check_token_for_value(c)))
+            })
+            .unwrap();
         tokens.iter_mut().for_each(|t| t.reset_rev());
-        let last = l.chars().rev().find_map(|c| {
-            c.to_digit(10).or(tokens.iter_mut().find_map(|t| t.check_token_for_value_rev(c)))
-        }).unwrap();
+        let last = l
+            .chars()
+            .rev()
+            .find_map(|c| {
+                c.to_digit(10).or(tokens
+                    .iter_mut()
+                    .find_map(|t| t.check_token_for_value_rev(c)))
+            })
+            .unwrap();
         solution = solution + (first * 10) + last;
     }
     solution
