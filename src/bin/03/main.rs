@@ -60,7 +60,7 @@ fn part_1(lines: &ParseOutput) -> Solution {
         .flat_map(|(numbers, _)| {
             numbers
                 .iter()
-                .filter_map(|number| has_surrounding_symbol(lines, number))
+                .filter_map(|number| check_for_surrounding_symbols(lines, number))
                 .collect::<Vec<i32>>()
         })
         .sum()
@@ -80,7 +80,7 @@ fn part_2(lines: &mut ParseOutput) -> Solution {
         .sum()
 }
 
-fn has_surrounding_symbol(
+fn check_for_surrounding_symbols(
     lines: &ParseOutput,
     (number_x_range, start_y, number): &Number,
 ) -> Option<i32> {
