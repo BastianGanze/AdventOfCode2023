@@ -6,9 +6,9 @@ type Solution = i32;
 
 pub type YPosition = i32;
 pub type XPositionRange = Range<i32>;
-pub type Token = (XPositionRange, YPosition, char);
+pub type Symbol = (XPositionRange, YPosition, char);
 pub type Number = (XPositionRange, YPosition, i32);
-pub type ParseOutput = Vec<(Vec<Number>, Vec<Token>)>;
+pub type ParseOutput = Vec<(Vec<Number>, Vec<Symbol>)>;
 const MAIN_INPUT: &str = include_str!("main_input");
 const TEST_INPUT: &str = include_str!("test_input");
 
@@ -19,30 +19,30 @@ pub fn parse(file: &str) -> ParseOutput {
         .map(|(l_i, l)| {
             let mut numbers = Vec::new();
             let mut symbols = Vec::new();
-            let mut current_token_vec: Vec<char> = Vec::new();
+            let mut current_symbol_vec: Vec<char> = Vec::new();
             let mut current_num_start: Option<i32> = None;
             for (c_i, c) in l.chars().enumerate() {
                 if c.is_ascii_digit() {
                     if current_num_start.is_none() {
                         current_num_start = Some(c_i as i32);
                     }
-                    current_token_vec.push(c);
+                    current_symbol_vec.push(c);
                 }
 
-                if (!c.is_ascii_digit() || (c_i == l.len() - 1 && !current_token_vec.is_empty()))
+                if (!c.is_ascii_digit() || (c_i == l.len() - 1 && !current_symbol_vec.is_empty()))
                     && current_num_start.is_some()
                 {
                     numbers.push((
                         current_num_start.unwrap()..c_i as i32,
                         l_i.try_into().unwrap(),
-                        current_token_vec
+                        current_symbol_vec
                             .iter()
                             .collect::<String>()
                             .parse()
                             .unwrap(),
                     ));
                     current_num_start = None;
-                    current_token_vec.clear();
+                    current_symbol_vec.clear();
                 }
 
                 if !c.is_ascii_digit() && c != '.' {
@@ -69,10 +69,10 @@ fn part_1(lines: &ParseOutput) -> Solution {
 fn part_2(lines: &mut ParseOutput) -> Solution {
     lines
         .iter()
-        .flat_map(|(_, tokens)| {
-            tokens
+        .flat_map(|(_, symbols)| {
+            symbols
                 .iter()
-                .map(|token| surrounding_numbers(lines, token))
+                .map(|symbol| surrounding_numbers(lines, symbol))
                 .collect::<Vec<Vec<i32>>>()
         })
         .filter(|n| n.len() == 2)
@@ -102,9 +102,12 @@ fn has_surrounding_symbol(
     None
 }
 
-fn surrounding_numbers(lines: &ParseOutput, (symbol_x_range, start_y, token): &Token) -> Vec<i32> {
+fn surrounding_numbers(
+    lines: &ParseOutput,
+    (symbol_x_range, start_y, symbol): &Symbol,
+) -> Vec<i32> {
     let mut numbers_vec = Vec::new();
-    if *token != '*' {
+    if *symbol != '*' {
         return numbers_vec;
     }
     for y in (start_y - 1)..=(start_y + 1) {
