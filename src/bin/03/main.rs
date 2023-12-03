@@ -1,7 +1,7 @@
 #![feature(test)]
 
+use std::cmp::{max, min};
 use std::ops::Range;
-
 type Solution = i32;
 
 pub type YPosition = i32;
@@ -90,9 +90,8 @@ fn has_surrounding_symbol(
         }
         if let Some((_, symbols)) = lines.get(y as usize) {
             if symbols.iter().any(|(symbol_x_range, _, _)| {
-                number_x_range.contains(&(symbol_x_range.start - 1))
-                    || number_x_range.contains(&symbol_x_range.start)
-                    || number_x_range.contains(&(symbol_x_range.start + 1))
+                max(number_x_range.start, symbol_x_range.start.saturating_sub(1))
+                    < min(number_x_range.end, symbol_x_range.start.saturating_add(2))
             }) {
                 return Some(*number);
             }
@@ -116,10 +115,9 @@ fn surrounding_numbers(
         }
         if let Some((numbers, _)) = lines.get(y as usize) {
             numbers_vec.extend(numbers.iter().filter_map(|(number_x_range, _, number)| {
-                if number_x_range.contains(&(symbol_x_range.start - 1))
-                    || number_x_range.contains(&symbol_x_range.start)
-                    || number_x_range.contains(&(symbol_x_range.start + 1))
-                {
+                let overlap = max(number_x_range.start, symbol_x_range.start.saturating_sub(1))
+                    < min(number_x_range.end, symbol_x_range.start.saturating_add(2));
+                if overlap {
                     Some(number)
                 } else {
                     None
