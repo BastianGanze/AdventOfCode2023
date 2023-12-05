@@ -43,7 +43,7 @@ fn part_1(cards: &ParseOutput) -> Solution {
 }
 
 fn part_2(cards: &mut ParseOutput) -> Solution {
-    let copies_of_cards: Vec<usize> = cards
+    let winning_card_count: Vec<usize> = cards
         .iter()
         .map(|(winning_numbers, real_numbers)| {
             real_numbers
@@ -52,18 +52,16 @@ fn part_2(cards: &mut ParseOutput) -> Solution {
                 .count()
         })
         .collect();
-    let mut cards_per_card: Vec<u32> = Vec::with_capacity(copies_of_cards.len());
-    for _ in 0..copies_of_cards.len() {
-        cards_per_card.push(1)
+    let mut cards_per_i: Vec<u32> = Vec::with_capacity(winning_card_count.len());
+    for _ in 0..winning_card_count.len() {
+        cards_per_i.push(1)
     }
     for (c_i, _) in cards.iter().enumerate() {
-        for _ in 0..cards_per_card[c_i] {
-            for copy_i in 1..=copies_of_cards[c_i] {
-                cards_per_card[c_i + copy_i] += 1;
-            }
+        for copy_i in 1..=winning_card_count[c_i] {
+            cards_per_i[c_i + copy_i] += cards_per_i[c_i];
         }
     }
-    cards_per_card.iter().sum()
+    cards_per_i.iter().sum()
 }
 
 fn main() {
