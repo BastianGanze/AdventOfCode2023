@@ -1,11 +1,16 @@
 #![feature(test)]
 
-type Solution = i64;
+type Solution = f64;
 pub type ParseOutput<const T: usize> = [(Solution, Solution); T];
-const MAIN_INPUT: ParseOutput<4> = [(40, 233), (82, 1011), (84, 1110), (92, 1487)];
-const MAIN_INPUT_2: ParseOutput<1> = [(40828492, 233101111101487)];
-const TEST_INPUT: ParseOutput<3> = [(7, 9), (15, 40), (30, 200)];
-const TEST_INPUT_2: ParseOutput<1> = [(71530, 940200)];
+const MAIN_INPUT: ParseOutput<4> = [
+    (40.0, 233.0),
+    (82.0, 1011.0),
+    (84.0, 1110.0),
+    (92.0, 1487.0),
+];
+const MAIN_INPUT_2: ParseOutput<1> = [(40828492.0, 233101111101487.0)];
+const TEST_INPUT: ParseOutput<3> = [(7.0, 9.0), (15.0, 40.0), (30.0, 200.0)];
+const TEST_INPUT_2: ParseOutput<1> = [(71530.0, 940200.0)];
 
 pub fn parse<const T: usize>(file: ParseOutput<T>) -> ParseOutput<T> {
     file
@@ -14,14 +19,10 @@ pub fn parse<const T: usize>(file: ParseOutput<T>) -> ParseOutput<T> {
 fn part_1<const T: usize>((race): &ParseOutput<T>) -> Solution {
     race.iter()
         .map(|(time, distance)| {
-            let start_t = 0.5 * (*time as f64 - (((time * time) - 4 * distance) as f64).sqrt());
-            let end_t = 0.5 * (*time as f64 + (((time * time) - 4 * distance) as f64).sqrt());
-            let sol = end_t.floor()
-                - start_t.ceil()
-                - (1.0 - end_t.fract().ceil())
-                - (1.0 - start_t.fract().ceil())
-                + 1.0;
-            sol as Solution
+            let record_to_meet = distance + 1.0;
+            let start_t = 0.5 * (*time - ((time * time) - 4.0 * record_to_meet).sqrt());
+            let end_t = 0.5 * (*time + ((time * time) - 4.0 * record_to_meet).sqrt());
+            end_t.floor() - start_t.ceil() + 1.0
         })
         .product::<Solution>()
 }
@@ -48,13 +49,13 @@ mod tests {
     #[test]
     pub fn test_part_1() {
         let parse_output = parse(TEST_INPUT);
-        assert_eq!(part_1(&parse_output), 288);
+        assert_eq!(part_1(&parse_output), 288.0);
     }
 
     #[test]
     pub fn test_part_2() {
         let parse_output = &mut parse(TEST_INPUT_2);
-        assert_eq!(part_2(parse_output), 71503);
+        assert_eq!(part_2(parse_output), 71503.0);
     }
 
     #[bench]
@@ -68,7 +69,7 @@ mod tests {
     fn bench_part_1(b: &mut Bencher) {
         let parse_output = parse(MAIN_INPUT);
         b.iter(move || {
-            assert_eq!(part_1(black_box(&parse_output)), 3316275);
+            assert_eq!(part_1(black_box(&parse_output)), 3316275.0);
         });
     }
 
@@ -76,7 +77,7 @@ mod tests {
     fn bench_part_2(b: &mut Bencher) {
         let parse_output = &mut parse(MAIN_INPUT_2);
         b.iter(|| {
-            assert_eq!(part_2(black_box(parse_output)), 27102791);
+            assert_eq!(part_2(black_box(parse_output)), 27102791.0);
         });
     }
 }
