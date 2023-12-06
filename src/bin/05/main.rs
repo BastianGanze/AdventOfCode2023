@@ -78,10 +78,10 @@ fn part_2((_, seed_ranges, transformations): &ParseOutput) -> Solution {
     let mut solution = Solution::MAX;
     for original_seed_range in seed_ranges {
         let mut unmapped_ranges: Vec<Range<Solution>> = vec![original_seed_range.clone()];
+        let mut new_unmapped_ranges = Vec::new();
+        let mut mapped_ranges = Vec::new();
 
         for transformation_ranges in transformations {
-            let mut new_unmapped_ranges = Vec::new();
-            let mut mapped_ranges = Vec::new();
             for (origin_range, _, conversion_number) in transformation_ranges {
                 for unmapped_range in unmapped_ranges.drain(..) {
                     match check_range_overlap(&unmapped_range, origin_range) {
