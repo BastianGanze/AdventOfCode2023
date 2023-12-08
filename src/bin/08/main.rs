@@ -5,15 +5,29 @@ use std::collections::HashMap;
 type Solution = u64;
 
 type Map<'a> = HashMap<&'a str, (&'a str, &'a str)>;
-pub type ParseOutput<'a> = (Vec<char>, Map<'a>);
+pub type ParseOutput<'a> = (Vec<Direction>, Map<'a>);
 const MAIN_INPUT: &str = include_str!("main_input");
 const TEST_INPUT: &str = include_str!("test_input");
 const TEST_INPUT_2: &str = include_str!("test_input_2");
 
+pub enum Direction {
+    L,
+    R,
+}
+
+use Direction::*;
+
 pub fn parse(file: &str) -> ParseOutput {
     let (i_str, m_str) = file.split_once("\n\n").unwrap();
     (
-        i_str.chars().collect(),
+        i_str
+            .chars()
+            .map(|c| match c {
+                'L' => L,
+                'R' => R,
+                _ => panic!(),
+            })
+            .collect(),
         m_str
             .split("\n")
             .filter(|s| !s.is_empty())
@@ -31,12 +45,11 @@ fn part_1((instructions, map): &ParseOutput) -> Solution {
     loop {
         for i in instructions {
             current_key = match i {
-                'L' => map.get(&current_key).unwrap().0.clone(),
-                'R' => map.get(&current_key).unwrap().1.clone(),
-                _ => panic!(),
+                L => map.get(&current_key).unwrap().0.clone(),
+                R => map.get(&current_key).unwrap().1.clone(),
             };
             count += 1;
-            if (current_key == "ZZZ") {
+            if current_key == "ZZZ" {
                 return count;
             }
         }
@@ -60,9 +73,8 @@ fn part_2((instructions, map): &mut ParseOutput) -> Solution {
                     continue;
                 }
                 let new_place = match i {
-                    'L' => map.get(current_place).unwrap().0.clone(),
-                    'R' => map.get(current_place).unwrap().1.clone(),
-                    _ => panic!(),
+                    L => map.get(current_place).unwrap().0.clone(),
+                    R => map.get(current_place).unwrap().1.clone(),
                 };
                 if new_place.as_bytes()[2] == 90 {
                     *count_from_start_to_end = count;
