@@ -42,32 +42,21 @@ fn part_1((instructions, map): &ParseOutput) -> Solution {
         }
     }
 }
-
-type End<'a> = Option<&'a str>;
-type LoopCount = Solution;
-type Done = bool;
 type CurrentPlace<'a> = &'a str;
 type CountToEnd = Solution;
 
 fn part_2((instructions, map): &mut ParseOutput) -> Solution {
-    let mut all_starts: Vec<(CurrentPlace, End, CountToEnd, LoopCount, Done)> = map
+    let mut all_starts: Vec<(CurrentPlace, CountToEnd)> = map
         .keys()
         .filter(|k| k.as_bytes()[2] as char == 'A')
-        .map(|k| (k.clone(), None, 0, 0, false))
+        .map(|k| (k.clone(), 0))
         .collect();
     let mut count = 0;
     loop {
         for i in &mut *instructions {
             count += 1;
-            for (
-                ref mut current_place,
-                ref mut end_option,
-                ref mut count_from_start_to_end,
-                ref mut loop_count,
-                ref mut done,
-            ) in all_starts.iter_mut()
-            {
-                if *done {
+            for (ref mut current_place, ref mut count_from_start_to_end) in all_starts.iter_mut() {
+                if *count_from_start_to_end > 0 {
                     continue;
                 }
                 let new_place = match i {
@@ -76,24 +65,18 @@ fn part_2((instructions, map): &mut ParseOutput) -> Solution {
                     _ => panic!(),
                 };
                 if new_place.as_bytes()[2] == 90 {
-                    if end_option.is_some() {
-                        *loop_count = count - *count_from_start_to_end;
-                        *done = true;
-                    } else {
-                        *end_option = Some(new_place);
-                        *count_from_start_to_end = count;
-                    }
+                    *count_from_start_to_end = count;
                 }
                 *current_place = new_place;
             }
         }
-        if all_starts.iter().all(|(_, _, _, _, done)| *done) {
+        if all_starts.iter().all(|(_, count)| *count > 0) {
             break;
         }
     }
     lcm(&all_starts
         .iter()
-        .map(|(_, _, _, loop_count, _)| *loop_count)
+        .map(|(_, loop_count)| *loop_count)
         .collect::<Vec<Solution>>())
 }
 
