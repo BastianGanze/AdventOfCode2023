@@ -1,6 +1,6 @@
 #![feature(test)]
 
-use std::collections::HashMap;
+use fnv::FnvHashMap as HashMap;
 
 type Solution = u64;
 
@@ -42,18 +42,16 @@ pub fn parse(file: &str) -> ParseOutput {
 fn part_1((instructions, map): &ParseOutput) -> Solution {
     let mut current_key = "AAA";
     let mut count = 0;
-    loop {
+    while current_key != "ZZZ" {
         for i in instructions {
             current_key = match i {
-                L => map.get(&current_key).unwrap().0.clone(),
-                R => map.get(&current_key).unwrap().1.clone(),
+                L => map.get(current_key).unwrap().0,
+                R => map.get(current_key).unwrap().1,
             };
             count += 1;
-            if current_key == "ZZZ" {
-                return count;
-            }
         }
     }
+    return count;
 }
 type CurrentPlace<'a> = &'a str;
 type CountToEnd = Solution;
@@ -62,10 +60,10 @@ fn part_2((instructions, map): &mut ParseOutput) -> Solution {
     let mut all_starts: Vec<(CurrentPlace, CountToEnd)> = map
         .keys()
         .filter(|k| k.as_bytes()[2] as char == 'A')
-        .map(|k| (k.clone(), 0))
+        .map(|k| (*k, 0))
         .collect();
     let mut count = 0;
-    loop {
+    while !all_starts.iter().all(|(_, count)| *count > 0) {
         for i in &mut *instructions {
             count += 1;
             for (ref mut current_place, ref mut count_from_start_to_end) in all_starts.iter_mut() {
@@ -73,17 +71,14 @@ fn part_2((instructions, map): &mut ParseOutput) -> Solution {
                     continue;
                 }
                 let new_place = match i {
-                    L => map.get(current_place).unwrap().0.clone(),
-                    R => map.get(current_place).unwrap().1.clone(),
+                    L => map.get(current_place).unwrap().0,
+                    R => map.get(current_place).unwrap().1,
                 };
                 if new_place.as_bytes()[2] == 90 {
                     *count_from_start_to_end = count;
                 }
                 *current_place = new_place;
             }
-        }
-        if all_starts.iter().all(|(_, count)| *count > 0) {
-            break;
         }
     }
     lcm(&all_starts
