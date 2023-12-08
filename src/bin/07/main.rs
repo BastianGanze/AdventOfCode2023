@@ -22,19 +22,6 @@ const ONE_PAIR: Solution = 2;
 const HIGH_CARD: Solution = 1;
 const TEST_INPUT: &str = include_str!("test_input");
 
-pub fn d_print(s: Solution) -> String {
-    match s {
-        FIVE_OF_A_KIND => "FIVE_OF_A_KIND".into(),
-        FOUR_OF_A_KIND => "FOUR_OF_A_KIND".into(),
-        FULL_HOUSE => "FULL_HOUSE".into(),
-        THREE_OF_A_KIND => "THREE_OF_A_KIND".into(),
-        TWO_PAIR => "TWO_PAIR".into(),
-        ONE_PAIR => "ONE_PAIR".into(),
-        HIGH_CARD => "HIGH_CARD".into(),
-        _ => panic!(),
-    }
-}
-
 pub fn parse(file: &str) -> ParseOutput {
     file.lines()
         .map(|l| {
