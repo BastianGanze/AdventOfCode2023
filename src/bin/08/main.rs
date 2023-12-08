@@ -4,8 +4,8 @@ use std::collections::HashMap;
 
 type Solution = u64;
 
-type Map = HashMap<String, (String, String)>;
-pub type ParseOutput = (Vec<char>, Map);
+type Map<'a> = HashMap<&'a str, (&'a str, &'a str)>;
+pub type ParseOutput<'a> = (Vec<char>, Map<'a>);
 const MAIN_INPUT: &str = include_str!("main_input");
 const TEST_INPUT: &str = include_str!("test_input");
 const TEST_INPUT_2: &str = include_str!("test_input_2");
@@ -18,23 +18,15 @@ pub fn parse(file: &str) -> ParseOutput {
             .split("\n")
             .filter(|s| !s.is_empty())
             .map(|map_entry| {
-                let i = map_entry.replace(" ", "");
-                let (key, instructions) = i.split_once("=").unwrap();
-                let (left_i, right_i) = instructions.split_once(",").unwrap();
-                (
-                    key.into(),
-                    (
-                        left_i.replace('(', "").into(),
-                        right_i.replace(')', "").into(),
-                    ),
-                )
+                let (key, instructions) = map_entry.split_once("=").unwrap();
+                (&key[0..=2], (&instructions[2..=4], &instructions[7..=9]))
             })
             .collect::<Map>(),
     )
 }
 
 fn part_1((instructions, map): &ParseOutput) -> Solution {
-    let mut current_key = "AAA".to_string();
+    let mut current_key = "AAA";
     let mut count = 0;
     loop {
         for i in instructions {
@@ -51,13 +43,14 @@ fn part_1((instructions, map): &ParseOutput) -> Solution {
     }
 }
 
-type End = Option<String>;
+type End<'a> = Option<&'a str>;
 type LoopCount = Solution;
 type Done = bool;
+type CurrentPlace<'a> = &'a str;
 type CountToEnd = Solution;
 
 fn part_2((instructions, map): &mut ParseOutput) -> Solution {
-    let mut all_starts: Vec<(String, End, CountToEnd, LoopCount, Done)> = map
+    let mut all_starts: Vec<(CurrentPlace, End, CountToEnd, LoopCount, Done)> = map
         .keys()
         .filter(|k| k.as_bytes()[2] as char == 'A')
         .map(|k| (k.clone(), None, 0, 0, false))
@@ -87,7 +80,7 @@ fn part_2((instructions, map): &mut ParseOutput) -> Solution {
                         *loop_count = count - *count_from_start_to_end;
                         *done = true;
                     } else {
-                        *end_option = Some(new_place.clone());
+                        *end_option = Some(new_place);
                         *count_from_start_to_end = count;
                     }
                 }
