@@ -57,12 +57,12 @@ fn get_next_value<const N: usize>(
 where
     [(); N * (N + 1) / 2]:,
 {
-    let mut sum_of_new_measures = 0;
+    let mut sum_of_new_diffs = 0;
     for i in start..end - 1 {
         measures[i + N - depth] = measures[i + 1] - measures[i];
-        sum_of_new_measures += measures[i + N - depth];
+        sum_of_new_diffs += measures[i + N - depth];
     }
-    if sum_of_new_measures == 0 {
+    if sum_of_new_diffs == 0 {
         return measures[end - 1];
     }
 
@@ -78,12 +78,12 @@ fn get_prev_value<const N: usize>(
 where
     [(); N * (N + 1) / 2]:,
 {
-    let mut sum_of_new_measures = 0;
+    let mut sum_of_new_diffs = 0;
     for i in start..end - 1 {
         measures[i + N - depth] = measures[i + 1] - measures[i];
-        sum_of_new_measures += measures[i + N - depth];
+        sum_of_new_diffs += measures[i + N - depth];
     }
-    if sum_of_new_measures == 0 {
+    if sum_of_new_diffs == 0 {
         return measures[start];
     }
 
