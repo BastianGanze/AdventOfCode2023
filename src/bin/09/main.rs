@@ -1,6 +1,6 @@
 #![feature(test)]
 
-type Solution = i64;
+type Solution = i32;
 pub type ParseOutput = Vec<Vec<Solution>>;
 const MAIN_INPUT: &str = include_str!("main_input");
 const TEST_INPUT: &str = include_str!("test_input");
@@ -24,12 +24,13 @@ fn part_2(measures: &mut ParseOutput) -> Solution {
 }
 
 fn get_measure_diffs(measures: &ParseOutput) -> Vec<Vec<Vec<Solution>>> {
-    let mut sol_vec = Vec::new();
+    let mut sol_vec = Vec::with_capacity(measures.len());
     for measure in measures {
-        let mut new_measures = vec![measure.clone()];
+        let mut new_measures: Vec<Vec<Solution>> = Vec::with_capacity(measure.len());
+        new_measures.push(measure.clone());
         let mut current_m_i = 0;
         while new_measures[current_m_i].iter().sum::<Solution>() != 0 {
-            let mut new_measure = Vec::new();
+            let mut new_measure = Vec::with_capacity(new_measures[current_m_i].len() - 1);
             for m_n in 0..new_measures[current_m_i].len() - 1 {
                 new_measure
                     .push(new_measures[current_m_i][m_n + 1] - new_measures[current_m_i][m_n]);
@@ -80,6 +81,14 @@ mod tests {
     fn bench_parse(b: &mut Bencher) {
         b.iter(|| {
             let _ = parse(MAIN_INPUT);
+        });
+    }
+
+    #[bench]
+    fn bench_get_measure_diffs(b: &mut Bencher) {
+        let parse_output = parse(MAIN_INPUT);
+        b.iter(move || {
+            assert_eq!(get_measure_diffs(black_box(&parse_output)).len(), 200);
         });
     }
 
