@@ -110,8 +110,8 @@ mod tests {
 
     #[test]
     pub fn test_part_2() {
-        let parse_output = &mut parse::<6>(TEST_INPUT);
-        assert_eq!(part_2(parse_output), 2);
+        let parse_output = parse::<6>(TEST_INPUT);
+        assert_eq!(part_2(&parse_output), 2);
     }
 
     #[bench]
@@ -131,9 +131,9 @@ mod tests {
 
     #[bench]
     fn bench_part_2(b: &mut Bencher) {
-        let parse_output = &mut parse::<21>(MAIN_INPUT);
+        let parse_output = parse::<21>(MAIN_INPUT);
         b.iter(|| {
-            assert_eq!(part_2(black_box(parse_output)), 1104);
+            assert_eq!(part_2(black_box(&parse_output)), 1104);
         });
     }
 }
