@@ -17,14 +17,14 @@ pub fn parse(file: &str) -> ParseOutput {
 
     let mut empty_space_y = 0;
     for y in 0..len_y {
-        let mut has_galaxy_in_row = false;
+        let mut found_galaxy = false;
         for x in 0..len_x {
             if lines[y][x] == b'#' {
-                has_galaxy_in_row = true;
+                found_galaxy = true;
                 galaxies.push((y, x));
             }
         }
-        if !has_galaxy_in_row {
+        if !found_galaxy {
             empty_space_y += 1;
         }
         empty_y[y] = empty_space_y;
@@ -32,13 +32,7 @@ pub fn parse(file: &str) -> ParseOutput {
 
     let mut empty_space_x = 0;
     for x in 0..len_x {
-        let mut has_galaxy_in_column = false;
-        for y in 0..len_y {
-            if lines[y][x] == b'#' {
-                has_galaxy_in_column = true;
-            }
-        }
-        if !has_galaxy_in_column {
+        if (0..len_y).all(|y| lines[y][x] != b'#') {
             empty_space_x += 1;
         }
         empty_x[x] = empty_space_x;
@@ -47,33 +41,23 @@ pub fn parse(file: &str) -> ParseOutput {
     (galaxies, empty_y, empty_x)
 }
 
-pub fn manhattan_distance(p1: (usize, usize), p2: (usize, usize)) -> Solution {
-    (p1.0.abs_diff(p2.0) + p1.1.abs_diff(p2.1)) as Solution
-}
-
 fn part_1((galaxies, empty_y, empty_x): &ParseOutput, dark_energy: usize) -> Solution {
     let g_n = galaxies.len();
-    let mut sol = 0;
-    for i1 in 0..g_n {
-        for i2 in i1 + 1..g_n {
-            let g1 = galaxies[i1];
-            let g2 = galaxies[i2];
-            sol += manhattan_distance(
-                (
-                    empty_y[g1.0] * dark_energy + g1.0,
-                    empty_x[g1.1] * dark_energy + g1.1,
-                ),
-                (
-                    empty_y[g2.0] * dark_energy + g2.0,
-                    empty_x[g2.1] * dark_energy + g2.1,
-                ),
-            );
-        }
-    }
-    sol
+    let gxs = &galaxies
+        .clone()
+        .iter()
+        .map(|(y, x)| (empty_y[*y] * dark_energy + y, empty_x[*x] * dark_energy + x))
+        .collect::<Vec<Galaxy>>();
+    (0..g_n)
+        .flat_map(|i1| (i1 + 1..g_n).map(move |i2| manhattan_distance(gxs[i1], gxs[i2])))
+        .sum()
 }
+
 fn part_2(out: &mut ParseOutput) -> Solution {
     part_1(out, 1000000 - 1)
+}
+pub fn manhattan_distance(p1: (usize, usize), p2: (usize, usize)) -> Solution {
+    (p1.0.abs_diff(p2.0) + p1.1.abs_diff(p2.1)) as Solution
 }
 fn main() {
     let parse_output = &mut parse(MAIN_INPUT);
