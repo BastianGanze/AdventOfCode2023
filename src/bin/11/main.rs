@@ -44,7 +44,6 @@ pub fn parse(file: &str) -> ParseOutput {
 fn part_1((galaxies, empty_y, empty_x): &ParseOutput, dark_energy: usize) -> Solution {
     let g_n = galaxies.len();
     let gxs = &galaxies
-        .clone()
         .iter()
         .map(|(y, x)| (empty_y[*y] * dark_energy + y, empty_x[*x] * dark_energy + x))
         .collect::<Vec<Galaxy>>();
