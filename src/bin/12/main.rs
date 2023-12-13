@@ -44,12 +44,6 @@ fn part_2(out: &mut ParseOutput) -> Solution {
             }
             arr_2.pop();
             solve_rec(&mut arr_2, ins_2, 0, &mut sol);
-            println!(
-                "now! {:?} {:?}",
-                arr_2.iter().map(|b| *b as char).collect::<String>(),
-                sol,
-            );
-            println!("{}", sol);
             sol
         })
         .sum()
@@ -83,13 +77,17 @@ fn solve_rec(
         match current_sol[i] {
             b'?' => {
                 // . case
+                let mut c = current_sol.clone();
+                c[i] = b'.';
                 match &current_fill {
-                    Some(0) | None => solve_rec(current_sol, left_ins.clone(), i + 1, sol_count),
+                    Some(0) | None => solve_rec(&mut c, left_ins.clone(), i + 1, sol_count),
                     _ => {}
                 }
                 // # case
                 if !handle_num(&mut current_fill, &mut left_ins) {
                     return;
+                } else {
+                    current_sol[i] = b'#';
                 }
             }
             b'#' => {
