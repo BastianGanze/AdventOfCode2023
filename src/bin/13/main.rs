@@ -31,39 +31,20 @@ fn get_mirror_positions(the_data: &Vec<Vec<bool>>) -> Vec<(usize, bool)> {
         let i_range_rev = seed..the_data.len();
         let mut fixed = false;
         for (i, i_rev) in i_range.zip(i_range_rev) {
-            match is_equal_with_possible_fix(&the_data[i], &the_data[i_rev]) {
-                (false, Some(_)) => {
-                    if fixed {
-                        // Can fix one but can't fix two
+            for c in 0..the_data[i].len() {
+                if the_data[i][c] != the_data[i_rev][c] {
+                    if !fixed {
+                        fixed = true;
+                    } else {
                         continue 'outer;
                     }
-                    fixed = true;
                 }
-                (false, None) => continue 'outer,
-                _ => {}
-            };
+            }
         }
         palindromes.push((seed, fixed));
     }
 
     palindromes
-}
-
-fn is_equal_with_possible_fix(a: &Vec<bool>, b: &Vec<bool>) -> (bool, Option<usize>) {
-    let mut fix = None;
-    let mut is_equal = true;
-    for i in 0..a.len() {
-        if a[i] != b[i] {
-            if fix.is_none() {
-                is_equal = false;
-                fix = Some(i);
-            } else {
-                return (false, None);
-            }
-        }
-    }
-
-    (is_equal, fix)
 }
 
 pub fn parse(file: &str) -> ParseOutput {
