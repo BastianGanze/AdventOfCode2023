@@ -8,43 +8,34 @@ const TEST_INPUT: &str = include_str!("test_input");
 
 fn solve(grids: &ParseOutput, use_fixed: bool) -> Solution {
     grids.iter().fold(0, |acc, (rows, columns)| {
-        acc + get_mirror_positions(columns)
-            .iter()
-            .filter_map(|(s, fixed)| if *fixed == use_fixed { Some(*s) } else { None })
-            .sum::<usize>()
-            + get_mirror_positions(rows)
-                .iter()
-                .filter_map(|(s, fixed)| {
-                    if *fixed == use_fixed {
-                        Some(s * 100)
-                    } else {
-                        None
-                    }
-                })
-                .sum::<usize>()
+        acc + get_mirror_position(columns, use_fixed) + get_mirror_position(rows, use_fixed) * 100
     })
 }
-fn get_mirror_positions(the_data: &Vec<Vec<bool>>) -> Vec<(usize, bool)> {
-    let mut palindromes = Vec::new();
+fn get_mirror_position(the_data: &Vec<Vec<bool>>, use_fixed: bool) -> usize {
     'outer: for seed in 1..the_data.len() {
         let i_range = (0..seed).rev();
         let i_range_rev = seed..the_data.len();
-        let mut fixed = false;
+        let mut is_fixed = false;
         for (i, i_rev) in i_range.zip(i_range_rev) {
             for c in 0..the_data[i].len() {
                 if the_data[i][c] != the_data[i_rev][c] {
-                    if !fixed {
-                        fixed = true;
+                    if !is_fixed {
+                        is_fixed = true;
                     } else {
                         continue 'outer;
                     }
                 }
             }
         }
-        palindromes.push((seed, fixed));
+        if use_fixed && is_fixed {
+            return seed;
+        }
+        if !use_fixed && !is_fixed {
+            return seed;
+        }
     }
 
-    palindromes
+    0
 }
 
 pub fn parse(file: &str) -> ParseOutput {
