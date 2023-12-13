@@ -29,8 +29,7 @@ fn get_mirror_position(the_data: &Vec<Vec<bool>>, use_fixed: bool) -> usize {
         }
         if use_fixed && is_fixed {
             return seed;
-        }
-        if !use_fixed && !is_fixed {
+        } else if !use_fixed && !is_fixed {
             return seed;
         }
     }
