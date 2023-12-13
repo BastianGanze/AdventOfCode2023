@@ -42,6 +42,7 @@ fn get_mirror_positions(the_data: &Vec<Vec<bool>>) -> Vec<(usize, bool)> {
             match is_equal_with_possible_fix(&the_data[i], &the_data[i_rev]) {
                 (false, Some(_)) => {
                     if fixed {
+                        // Can fix one but can't fix two
                         continue 'outer;
                     }
                     fixed = true;
