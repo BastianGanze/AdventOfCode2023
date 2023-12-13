@@ -6,32 +6,24 @@ pub type ParseOutput = Vec<(GridLines, GridColumns)>;
 const MAIN_INPUT: &str = include_str!("main_input");
 const TEST_INPUT: &str = include_str!("test_input");
 
-fn part_1(grids: &ParseOutput) -> Solution {
+fn solve(grids: &ParseOutput, use_fixed: bool) -> Solution {
     grids.iter().fold(0, |acc, (rows, columns)| {
         acc + get_mirror_positions(columns)
             .iter()
-            .filter_map(|(s, fixed)| if !fixed { Some(*s) } else { None })
+            .filter_map(|(s, fixed)| if *fixed == use_fixed { Some(*s) } else { None })
             .sum::<usize>()
             + get_mirror_positions(rows)
                 .iter()
-                .filter_map(|(s, fixed)| if !fixed { Some(s * 100) } else { None })
+                .filter_map(|(s, fixed)| {
+                    if *fixed == use_fixed {
+                        Some(s * 100)
+                    } else {
+                        None
+                    }
+                })
                 .sum::<usize>()
     })
 }
-
-fn part_2(grids: &mut ParseOutput) -> Solution {
-    grids.iter().fold(0, |acc, (rows, columns)| {
-        acc + get_mirror_positions(columns)
-            .iter()
-            .filter_map(|(s, fixed)| if *fixed { Some(*s) } else { None })
-            .sum::<usize>()
-            + get_mirror_positions(rows)
-                .iter()
-                .filter_map(|(s, fixed)| if *fixed { Some(s * 100) } else { None })
-                .sum::<usize>()
-    })
-}
-
 fn get_mirror_positions(the_data: &Vec<Vec<bool>>) -> Vec<(usize, bool)> {
     let mut palindromes = Vec::new();
     'outer: for seed in 1..the_data.len() {
@@ -57,7 +49,7 @@ fn get_mirror_positions(the_data: &Vec<Vec<bool>>) -> Vec<(usize, bool)> {
     palindromes
 }
 
-fn is_equal_with_possible_fix(a: &Vec<bool>, b: &Vec<bool>) -> (bool, Option<(usize)>) {
+fn is_equal_with_possible_fix(a: &Vec<bool>, b: &Vec<bool>) -> (bool, Option<usize>) {
     let mut fix = None;
     let mut is_equal = true;
     for i in 0..a.len() {
@@ -101,8 +93,8 @@ pub fn parse(file: &str) -> ParseOutput {
 }
 fn main() {
     let parse_output = &mut parse(MAIN_INPUT);
-    println!("Solution to part 1 is {}", part_1(parse_output));
-    println!("Solution to part 2 is {}", part_2(parse_output));
+    println!("Solution to part 1 is {}", solve(parse_output, false));
+    println!("Solution to part 2 is {}", solve(parse_output, true));
 }
 
 #[cfg(test)]
@@ -114,13 +106,13 @@ mod tests {
     #[test]
     pub fn test_part_1() {
         let parse_output = parse(TEST_INPUT);
-        assert_eq!(part_1(&parse_output), 405);
+        assert_eq!(solve(&parse_output, false), 405);
     }
 
     #[test]
     pub fn test_part_2() {
         let parse_output = &mut parse(TEST_INPUT);
-        assert_eq!(part_2(parse_output), 400);
+        assert_eq!(solve(parse_output, true), 400);
     }
 
     #[bench]
@@ -134,7 +126,7 @@ mod tests {
     fn bench_part_1(b: &mut Bencher) {
         let parse_output = parse(MAIN_INPUT);
         b.iter(move || {
-            assert_eq!(part_1(black_box(&parse_output)), 41859);
+            assert_eq!(solve(black_box(&parse_output), false), 41859);
         });
     }
 
@@ -142,7 +134,7 @@ mod tests {
     fn bench_part_2(b: &mut Bencher) {
         let parse_output = &mut parse(MAIN_INPUT);
         b.iter(|| {
-            assert_eq!(part_2(black_box(parse_output)), 30842);
+            assert_eq!(solve(black_box(parse_output), true), 30842);
         });
     }
 }
