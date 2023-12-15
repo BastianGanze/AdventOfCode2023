@@ -67,7 +67,6 @@ fn part_2(grid: &mut ParseOutput) -> Solution {
         }
     }
 
-    let mut sol = 0;
     calc_north_support(&g, len)
 }
 
@@ -88,22 +87,12 @@ pub fn roll_rocks_north(
     range_1: Range<Solution>,
     range_2: Range<Solution>,
 ) {
-    let len = grid.len();
-
     for r1 in range_1 {
         let mut current_empty_spaces = 0;
         for r2 in range_2.start..range_2.end {
-            let mut current_height = len - r2;
             match grid[r2][r1] {
                 b'.' => current_empty_spaces += 1,
                 b'O' => {
-                    /*println!(
-                        "moving from {} to {} {} {}",
-                        r2,
-                        r2 - current_empty_spaces,
-                        current_height,
-                        current_empty_spaces
-                    );*/
                     grid[r2][r1] = b'.';
                     grid[r2 - current_empty_spaces][r1] = b'O';
                 }
@@ -111,17 +100,13 @@ pub fn roll_rocks_north(
                 _ => panic!(),
             }
         }
-        //println!("-----------------");
     }
 }
 
 pub fn roll_rocks_west(grid: &mut ParseOutput, range_1: Range<Solution>, range_2: Range<Solution>) {
-    let len = grid.len();
-
     for r1 in range_1 {
         let mut current_empty_spaces = 0;
         for r2 in range_2.start..range_2.end {
-            let mut current_height = len - r2;
             match grid[r1][r2] {
                 b'.' => current_empty_spaces += 1,
                 b'O' => {
@@ -140,12 +125,9 @@ pub fn roll_rocks_south(
     range_1: Range<Solution>,
     range_2: Range<Solution>,
 ) {
-    let len = grid.len();
-
     for r1 in range_1 {
         let mut current_empty_spaces = 0;
         for r2 in (range_2.start..range_2.end).rev() {
-            let mut current_height = r2;
             match grid[r2][r1] {
                 b'.' => current_empty_spaces += 1,
                 b'O' => {
@@ -160,12 +142,9 @@ pub fn roll_rocks_south(
 }
 
 pub fn roll_rocks_east(grid: &mut ParseOutput, range_1: Range<Solution>, range_2: Range<Solution>) {
-    let len = grid.len();
-
     for r1 in range_1 {
         let mut current_empty_spaces = 0;
         for r2 in (range_2.start..range_2.end).rev() {
-            let mut current_height = r2;
             match grid[r1][r2] {
                 b'.' => current_empty_spaces += 1,
                 b'O' => {
