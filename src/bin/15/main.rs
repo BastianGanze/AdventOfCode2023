@@ -1,6 +1,5 @@
 #![feature(test)]
 
-use std::collections::VecDeque;
 use std::convert::TryInto;
 
 type Solution = usize;
@@ -9,26 +8,22 @@ const MAIN_INPUT: &str = include_str!("main_input");
 const TEST_INPUT: &str = include_str!("test_input");
 
 fn part_1(hashes: &ParseOutput) -> Solution {
-    hashes
-        .iter()
-        .map(|h| {
-            h.as_bytes().iter().fold(0 as Solution, |acc, c| {
-                ((acc + (*c) as Solution) * 17) % 256
-            }) as Solution
-        })
-        .sum::<Solution>() as Solution
+    hashes.iter().fold(0, |acc, h| {
+        acc + h
+            .as_bytes()
+            .iter()
+            .fold(0, |acc, c| ((acc + (*c) as Solution) * 17) % 256)
+    })
 }
 
 #[derive(Debug)]
 struct Boxxu<'a> {
-    lenses: VecDeque<(&'a str, u8)>,
+    lenses: Vec<(&'a str, u8)>,
 }
 
 impl<'a> Boxxu<'a> {
     pub fn default() -> Boxxu<'a> {
-        Boxxu {
-            lenses: VecDeque::new(),
-        }
+        Boxxu { lenses: Vec::new() }
     }
 }
 
@@ -46,7 +41,7 @@ fn part_2(instructions: &mut ParseOutput) -> Solution {
         let bytes = instruction.as_bytes();
         let mut operation_position = bytes.iter().position(|c| *c == b'=' || *c == b'-').unwrap();
         let box_label = &instruction[..operation_position];
-        let mut box_i: usize = bytes[..operation_position]
+        let mut box_i = bytes[..operation_position]
             .iter()
             .fold(0, |acc, c| ((acc + (*c) as usize) * 17) % 256);
         let mut operation = match bytes[operation_position..][0] {
@@ -67,7 +62,7 @@ fn part_2(instructions: &mut ParseOutput) -> Solution {
                     boxxu.lenses[lens_i] = (box_label, focus);
                 }
                 None => {
-                    boxxu.lenses.push_back((box_label, focus));
+                    boxxu.lenses.push((box_label, focus));
                 }
             },
             Operation::Minus => {
