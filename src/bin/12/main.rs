@@ -137,64 +137,48 @@ fn part_2(out: &mut ParseOutput) -> Solution {
 }
 
 fn solve_rec_2(mut current_cell: Cell, memo: &mut Memoization) -> Solution {
-    let current_cell_clone = current_cell.clone();
     if let Some(&result) = memo.get(&current_cell) {
         return result;
-    }
-
-    let result: Solution = if current_cell.template.len() == 0 {
-        if current_cell.inserts_left.len() == 0
-            && (current_cell.current_fill.is_none() || Some(0) == current_cell.current_fill)
-        {
-            1
-        } else {
-            0
-        }
     } else {
-        match current_cell.template[0] {
-            b'?' => {
-                let working = current_cell.new_template_starting_with(b'.');
-                let broken = current_cell.new_template_starting_with(b'#');
-                (match memo.get(&working) {
-                    Some(c) => *c,
-                    None => solve_rec_2(working, memo),
-                } + match memo.get(&broken) {
-                    Some(c) => *c,
-                    None => solve_rec_2(broken, memo),
-                })
+        let result: Solution = if current_cell.template.len() == 0 {
+            if current_cell.inserts_left.len() == 0
+                && (current_cell.current_fill.is_none() || Some(0) == current_cell.current_fill)
+            {
+                1
+            } else {
+                0
             }
-            b'#' => {
-                let mut cell_copy = current_cell.clone();
-                if !cell_copy.consume_next_fill() {
-                    return 0;
+        } else {
+            let current_cell_clone = current_cell.clone();
+            let result = match current_cell.template[0] {
+                b'?' => {
+                    solve_rec_2(current_cell.new_template_starting_with(b'.'), memo)
+                        + solve_rec_2(current_cell.new_template_starting_with(b'#'), memo)
                 }
+                b'#' => {
+                    let mut cell_copy = current_cell.clone();
+                    if !cell_copy.consume_next_fill() {
+                        return 0;
+                    }
 
-                let deeper_cell = cell_copy.new_template_plus_1();
-                return match memo.get(&deeper_cell) {
-                    Some(c) => *c,
-                    None => solve_rec_2(deeper_cell, memo),
-                };
-            }
-            b'.' => {
-                let mut cell_copy = current_cell.clone();
-                if !cell_copy.reset_fill() {
-                    return 0;
+                    solve_rec_2(cell_copy.new_template_plus_1(), memo)
                 }
+                b'.' => {
+                    let mut cell_copy = current_cell.clone();
+                    if !cell_copy.reset_fill() {
+                        return 0;
+                    }
 
-                let deeper_cell = cell_copy.new_template_plus_1();
-                return match memo.get(&deeper_cell) {
-                    Some(c) => *c,
-                    None => solve_rec_2(deeper_cell, memo),
-                };
-            }
-            _ => panic!(),
-        }
-    };
-
-    memo.insert(current_cell_clone, result);
-
-    // Return the result
-    result
+                    solve_rec_2(cell_copy.new_template_plus_1(), memo)
+                }
+                _ => panic!(),
+            };
+            memo.insert(current_cell_clone, result);
+            result
+        };
+        // Return the result
+        result
+    }
 }
 
 fn main() {
