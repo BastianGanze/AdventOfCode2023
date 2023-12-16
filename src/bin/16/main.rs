@@ -19,12 +19,8 @@ fn part_1(
     let g = &mut grid.clone();
     let max = (0..g.len() as Solution, 0..g[0].len() as Solution);
     let mut running_beams: Vec<Beam> = vec![(start_field, start_direction)];
-    let mut marked_fields = 0;
     while let Some(((y, x), direction)) = running_beams.pop() {
-        if !g[y][x].1 {
-            marked_fields += 1;
-            g[y][x].1 = true;
-        }
+        g[y][x].1 = true;
         let (next_dir, split) = get_next_directions(direction, &g[y][x].0);
         if split.is_some() {
             // Check if we already split on this field
@@ -42,7 +38,9 @@ fn part_1(
             }
         }
     }
-    marked_fields
+    g.iter()
+        .map(|l| l.iter().filter(|c| c.1).count() as Solution)
+        .sum::<Solution>()
 }
 
 fn part_2(grid: &ParseOutput) -> Solution {
