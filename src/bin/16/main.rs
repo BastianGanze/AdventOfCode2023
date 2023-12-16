@@ -23,19 +23,19 @@ fn part_1(
         g[y][x].1 = true;
         let (next_dir, split) = get_next_directions(direction, &g[y][x].0);
         if split.is_some() {
-            // Check if we already split on this field
+            // Continue if we already split on this field
             if g[y][x].2 == true {
                 continue;
             }
             g[y][x].2 = true;
         }
-        if let Some(next_field) = get_next_field(&(y, x), &next_dir, &max) {
-            running_beams.push((next_field, next_dir));
-        }
         if let Some(split_dir) = split {
             if let Some(next_field) = get_next_field(&(y, x), &split_dir, &max) {
                 running_beams.push((next_field, split_dir));
             }
+        }
+        if let Some(next_field) = get_next_field(&(y, x), &next_dir, &max) {
+            running_beams.push((next_field, next_dir));
         }
     }
     g.iter()
