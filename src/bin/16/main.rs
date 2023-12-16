@@ -40,7 +40,7 @@ fn part_1(
     }
     g.iter()
         .map(|l| l.iter().filter(|c| c.1).count() as Solution)
-        .sum::<Solution>()
+        .sum()
 }
 
 fn part_2(grid: &ParseOutput) -> Solution {
