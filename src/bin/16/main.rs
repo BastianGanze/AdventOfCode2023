@@ -29,14 +29,12 @@ fn part_1(
             }
             g[y][x].2 = true;
         }
-        if let Some(split_dir) = split {
-            if let Some(next_field) = get_next_field(&(y, x), &split_dir, &max) {
-                running_beams.push((next_field, split_dir));
-            }
-        }
-        if let Some(next_field) = get_next_field(&(y, x), &next_dir, &max) {
-            running_beams.push((next_field, next_dir));
-        }
+        split.and_then(|split_dir| {
+            get_next_field(&(y, x), &split_dir, &max)
+                .map(|next_field| running_beams.push((next_field, split_dir)))
+        });
+        get_next_field(&(y, x), &next_dir, &max)
+            .map(|next_field| running_beams.push((next_field, next_dir)));
     }
     g.iter()
         .map(|l| l.iter().filter(|c| c.1).count() as Solution)
