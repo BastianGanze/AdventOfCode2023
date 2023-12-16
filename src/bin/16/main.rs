@@ -27,6 +27,7 @@ fn part_1(
         }
         let (next_dir, split) = get_next_directions(direction, &g[y][x].0);
         if split.is_some() {
+            // Check if we already split on this field
             if g[y][x].2 == true {
                 continue;
             }
@@ -44,7 +45,7 @@ fn part_1(
     marked_fields
 }
 
-fn part_2(grid: &mut ParseOutput) -> Solution {
+fn part_2(grid: &ParseOutput) -> Solution {
     let (y_max, x_max) = (grid.len() - 1, grid[0].len() - 1);
     let mut max_tiles = Solution::MIN;
     let right = (0, 1);
@@ -110,17 +111,10 @@ fn get_next_field(
 }
 
 pub fn parse(file: &str) -> ParseOutput {
-    let mut grid = Vec::new();
-
-    for l in file.lines().filter(|l| !l.is_empty()) {
-        let mut line = Vec::new();
-        for character in l.as_bytes().iter() {
-            line.push((*character, false, false));
-        }
-        grid.push(line);
-    }
-
-    grid
+    file.lines()
+        .filter(|l| !l.is_empty())
+        .map(|l| l.as_bytes().iter().map(|c| (*c, false, false)).collect())
+        .collect()
 }
 fn main() {
     let parse_output = &mut parse(MAIN_INPUT);
