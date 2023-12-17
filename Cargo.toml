@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 colored = "2.0.0"
 fnv = { version = "1.0.7", features = [] }
+rand = "0.8.5"
 
 [profile.bench]
 lto = true
