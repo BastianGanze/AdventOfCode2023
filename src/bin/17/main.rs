@@ -65,8 +65,7 @@ fn calc_best_path(mut grid: ParseOutput, min_straights: i32, max_straights: i32)
                     return current_field.total_heat_loss + heat_loss;
                 }
             }
-            let field_cost =
-                grid.get_field_cost(current_field.coordinate.0, current_field.coordinate.1);
+            let field_cost = grid.get_field_cost(y, x);
             let new_total_heat_loss = current_field.total_heat_loss + heat_loss;
             let new_total_field_cost = current_field.cost + field_cost;
             let new_cell = Cell {
