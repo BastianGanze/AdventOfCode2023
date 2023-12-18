@@ -26,6 +26,17 @@ const MAIN_INPUT: &str = include_str!("main_input");
 const TEST_INPUT: &str = include_str!("test_input");
 type IsEdge = bool;
 fn part_1(instructions: &ParseOutput) -> Solution {
+    /*
+    Picks theorem would have been a better idea, or just implementing this
+    Let 'vertices' be an array of N pairs (x,y), indexed from 0
+        Let 'area' = 0.0
+        for i = 0 to N-1, do
+          Let j = (i+1) mod N
+          Let area = area + vertices[i].x * vertices[j].y
+          Let area = area - vertices[i].y * vertices[j].x
+        end for
+        Return 'area'
+     */
     let mut grid: BTreeMap<Solution, Vec<((Solution, Solution), IsEdge)>> = BTreeMap::new();
     let (mut current_y, mut current_x) = (0, 0);
     let mut wrapped_instructions = Vec::with_capacity(instructions.len() + 2);
