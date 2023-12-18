@@ -179,7 +179,7 @@ mod tests {
     fn bench_part_1(b: &mut Bencher) {
         let parse_output = parse(MAIN_INPUT);
         b.iter(move || {
-            assert_eq!(part_1(black_box(&parse_output)), 1798691765);
+            assert_eq!(part_1(black_box(&parse_output)), 39039);
         });
     }
 
@@ -187,7 +187,7 @@ mod tests {
     fn bench_part_2(b: &mut Bencher) {
         let parse_output = &mut parse(MAIN_INPUT);
         b.iter(|| {
-            assert_eq!(part_2(black_box(parse_output)), 1104);
+            assert_eq!(part_2(black_box(parse_output)), 44644464596918);
         });
     }
 }
