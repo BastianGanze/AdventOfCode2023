@@ -1,5 +1,6 @@
 #![feature(test)]
 
+use regex::Regex;
 use std::collections::{BTreeSet, HashMap};
 
 type Solution = u64;
@@ -59,13 +60,13 @@ fn part_1(out: &ParseOutput) -> Solution {
 }
 
 fn part_2(out: &mut ParseOutput) -> Solution {
-    let (mut graph, mut parts) = out.clone();
+    let (mut graph, _) = out.clone();
     graph
         .get_mut("in")
         .unwrap()
         .parts
         .insert([(1, 4000), (1, 4000), (1, 4000), (1, 4000)]);
-    while let Some(mut node_name) = graph
+    while let Some(node_name) = graph
         .iter()
         .filter(|(name, _)| name != &&"R" && name != &&"A")
         .find_map(|(current_node, n)| {
@@ -163,7 +164,7 @@ pub fn parse(file: &'static str) -> ParseOutput {
         },
     );
 
-    let mut p2 = parts.split("\n");
+    let p2 = parts.split("\n");
     for p3 in p2 {
         let mut part = [(0, 0); 4];
         for (p_i, p) in p3.split(",").enumerate() {
@@ -219,7 +220,7 @@ mod tests {
     fn bench_part_2(b: &mut Bencher) {
         let parse_output = &mut parse(MAIN_INPUT);
         b.iter(|| {
-            assert_eq!(part_2(black_box(parse_output)), 1104);
+            assert_eq!(part_2(black_box(parse_output)), 132186256794011);
         });
     }
 }
