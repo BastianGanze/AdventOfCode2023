@@ -209,7 +209,7 @@ impl Field {
     }
 }
 
-impl PartialOrd<Self> for Field {
+impl PartialOrd for Field {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         if self.cost > other.cost {
             return Some(Ordering::Less);

@@ -29,7 +29,6 @@ pub enum Module {
     Conjunction(Conjunction),
 }
 const MAIN_INPUT: &str = include_str!("main_input");
-const TEST_INPUT: &str = include_str!("test_input");
 
 fn find_corresponding_end(
     modules: &mut Vec<Module>,
@@ -61,14 +60,14 @@ fn part_2(out: &mut ParseOutput) -> Solution {
     let (mut modules, broadcaster_id, _, before_output_id) = out.clone();
     let mut signals: Vec<(ModuleID, ModuleID, bool)> = Vec::new();
     let mut new_signals = Vec::new();
-    let mut starts = if let Some(Module::Broadcaster(vec)) = modules.get(broadcaster_id) {
+    let starts = if let Some(Module::Broadcaster(vec)) = modules.get(broadcaster_id) {
         vec.clone()
     } else {
         panic!("Starts!!")
     };
 
     let mut marked = FnvHashSet::<usize>::default();
-    let mut ends = starts
+    let ends = starts
         .iter()
         .filter_map(|s| find_corresponding_end(&mut modules, *s, &mut marked, before_output_id))
         .collect::<Vec<usize>>();
@@ -255,6 +254,7 @@ mod tests {
     extern crate test;
     use super::*;
     use test::{black_box, Bencher};
+    const TEST_INPUT: &str = include_str!("test_input");
 
     #[test]
     pub fn test_part_1() {
