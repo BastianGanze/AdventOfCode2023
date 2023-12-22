@@ -60,8 +60,9 @@ fn part_2(bricks: &mut ParseOutput) -> Solution {
                         .unwrap()
                         .iter()
                         .filter(|os| **os != *brick && !falling.contains(*os))
-                        .count();
-                    if supported_by_no_others == 0 {
+                        .count()
+                        == 0;
+                    if supported_by_no_others {
                         bricks.insert(brick_this_one_supports);
                         falling.insert(*brick_this_one_supports);
                     }
