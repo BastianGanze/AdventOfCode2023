@@ -7,11 +7,6 @@ type Solution = u64;
 pub type ParseOutput = (Vec<Module>, ModuleID, ModuleID, ModuleID);
 pub type ModuleID = usize;
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq)]
-pub struct Cell {
-    ff_states: Vec<bool>,
-}
-
 #[derive(Debug, Clone)]
 pub struct FlipFlop {
     state: bool,

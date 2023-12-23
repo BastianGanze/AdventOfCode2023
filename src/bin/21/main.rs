@@ -1,6 +1,6 @@
 #![feature(test)]
 
-use std::cmp::{max, min, Ordering};
+use std::cmp::{min, Ordering};
 use std::collections::BinaryHeap;
 use std::ops::Div;
 
@@ -94,10 +94,10 @@ fn part_2(out: &ParseOutput, max_steps: usize) -> Solution {
         if *i_y == 0 && *i_x == 1 {
             right_odd_tmpl.insert((*y, *x, *i_y, *i_x), *s);
         }
-        if *i_y == 0 && *i_x == 2 {
+        if *i_y == 0 && *i_x == 4 {
             right_even_tmpl.insert((*y, *x, *i_y, *i_x), *s);
         }
-        if *i_y == 0 && *i_x == 4 {
+        if *i_y == 0 && *i_x == 6 {
             right_even_tmpl2.insert((*y, *x, *i_y, *i_x), *s);
         }
     }
@@ -121,7 +121,7 @@ fn part_2(out: &ParseOutput, max_steps: usize) -> Solution {
     }
 
     for ((y, x, i_y, i_x), s) in &right_even_tmpl {
-        println!("{}", right_even_tmpl2.get(&(*y, *x, 0, 4)).unwrap() - *s);
+        println!("{}", right_even_tmpl2.get(&(*y, *x, 0, 6)).unwrap() - *s);
     }
     println!(
         "{} {}",
