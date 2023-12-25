@@ -9,7 +9,7 @@ edition = "2021"
 colored = "2.0.0"
 fnv = { version = "1.0.7", features = [] }
 rand = "0.8.5"
-regex = { version = "1.10.2", features = [] }
+nalgebra = "0.32.3"
 
 [profile.bench]
 lto = true
