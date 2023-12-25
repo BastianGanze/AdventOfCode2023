@@ -1,0 +1,54 @@
+<head>
+    <link rel="stylesheet" href="http://cdn.graphalchemist.com/alchemy.min.css"/>
+    <style>
+        #cy {
+            width: 800px;
+            height: 800px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="cy" id="cy"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js" integrity="sha512-RcuA+PEnJcg1caTn53YLhZ3bYVFXphzcPL1BjBoAwFiA3bErav+AndZz1xrqpAtv/8Waep2X+9zn8KWpwacUSA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+
+    fetch("./graph.json").then((data) => {
+        data.json().then((j) => {
+            let elements = [];
+            for (const l of j.nodes) {
+                elements.push({data: l});
+            }
+            for (const l of j.edges) {
+                elements.push({data: l});
+            }
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements,
+                style: [ // the stylesheet for the graph
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#666',
+                            'label': 'data(id)'
+                        }
+                    },
+
+                    {
+                        selector: 'edge',
+                        style: {
+                            'curve-style': 'straight'
+                        }
+                    }
+                ],
+                layout: {
+                    name: 'cose',
+                    rows: 1
+                }
+            });
+        })
+    });
+
+</script>
+</body>
+</html>

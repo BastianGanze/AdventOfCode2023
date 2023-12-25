@@ -95,7 +95,7 @@ fn transform_grid((grid, start): &mut ParseOutput) -> Graph {
             continue;
         }
         visited.insert((y, x));
-        let n = get_neighbours_climb(grid, (y, x), &v);
+        let n = get_neighbours_climb(grid, (y, x), &v);a
         if n.len() > 2 {
             graph.insert((y, x), FnvHashMap::default());
         }
